@@ -8,7 +8,7 @@ have been sourced by the project.
 The following regex can extract the contents of the require string...
 
 ```bash
-pattern="^(\s|[^#])*require\s*\(?['\"]\K([^'\"]+)"
+pattern="^[^#]*require\s*\(?['\"]\K([^'\"]{1,80})"
 ```
 
 This can be used in combination with a few tools to produce a list of all files that
@@ -31,22 +31,27 @@ function listPaths {
     basePath=$(dirname $f)
     for match in $(ggrep -Po $pattern $f)
     do
-      resolveRequire "$basePath" "$match"
+      if [[ $match =~ ^\. ]];
+      then
+        realpath $basePath/$match | sed 's/\/\.\//\//'
+      else
+        echo $match
+      fi
     done
   done
 
 }
 
+realpath() {
+  [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
 function resolveRequire {
 
-  baseDir=$1
-  requireArg=$2
+  requireArg=$1
 
   coffee -e "
-  path = require('path')
-  requireArg = \"$requireArg\"
-  requireArg = path.resolve(\"$baseDir\", \"$match\") if /^\./.test(requireArg)
-  console.log(require.resolve(requireArg))"
+  console.log require.resolve(\"$requireArg\")"
 
 }
 
@@ -57,6 +62,9 @@ filePattern=$3
 
 cd $projectBase
 echo "Searching for files matching $filePattern in $searchIn..."
-listPaths "$searchIn" "$filePattern" | sort | uniq
+for requireArg in $(listPaths "$searchIn" "$filePattern" | sort | uniq)
+do
+  resolveRequire $requireArg
+done
 
 ```
