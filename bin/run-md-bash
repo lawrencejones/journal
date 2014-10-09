@@ -1,0 +1,2 @@
+#!/bin/bash
+cat $1 | sed -n "/\`\`\`bash/,/\`\`\`/p" | grep -v "\`\`\`" | bash /dev/stdin ${@:2}
