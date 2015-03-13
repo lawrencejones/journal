@@ -1,5 +1,5 @@
 #!/usr/bin/env ../bin/run-md-bash
-# Matches multiple lines, with optional run
+# SQL Multiline perl matching
 
 Assuming we have a file that looks like below...
 
@@ -34,3 +34,11 @@ echo "$fileContent" \
 # | psql  # to run
 
 ```
+
+...which will output the contents of Q2's query.
+
+| Flag | Purpose |
+|------|---------|
+| `-P` | Invokes perl regex support |
+| `-z` | Changes line terminator to \0, rather than \n |
+| `-o` | Output the matched text |
