@@ -1,2 +1,21 @@
 #!/bin/bash
-cat $1 | sed -n "/\`\`\`bash/,/\`\`\`/p" | grep -v "\`\`\`" | bash /dev/stdin ${@:2}
+# Provides an interpreter for mixed markdown/bash syntax
+# Formats and outputs readable error text should script fail
+
+print-debug() {
+  echo -e "\n$PADDING!!FAILED!!\n"
+  nl -b a -w 4 $TMPBASH && echo
+  exit -1
+}
+
+PADDING="        "
+
+TMPBASH=$(mktemp -t "run-md-bash")
+cat $1 | sed -n "/\`\`\`bash/,/\`\`\`/p" | grep -v "\`\`\`" > $TMPBASH
+source $TMPBASH 2> >(
+  while read l;
+  do
+    echo "$PADDING${l#$TMPBASH: }" >&2
+  done
+  echo
+) || print-debug
