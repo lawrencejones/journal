@@ -1,4 +1,4 @@
-#!/usr/bin/env ../bin/run-md-bash
+#!/usr/bin/env run-md-bash
 # SQL Multiline perl matching
 
 Assuming we have a file that looks like below...

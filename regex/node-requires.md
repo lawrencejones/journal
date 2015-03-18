@@ -1,4 +1,4 @@
-#!/usr/bin/env ../bin/run-md-bash
+#!/usr/bin/env run-md-bash
 # Extract required modules
 
 For any java/coffee-script files that run with the CommonJS module pattern, it can
