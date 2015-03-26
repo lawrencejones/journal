@@ -21,15 +21,19 @@ The first can be tackled by simply removing the content in `/etc/hosts`.
 
 ```bash
 
+echo -n "First lets remove the helper script that reapplies rules periodically..."
+sudo rm -f /Library/PrivilegedHelperTools/org.eyebeam.SelfControl
+echo " done!"
+
 echo -n "Do you wish to remove /etc/hosts config? [yn] "
 read yn
 
 if [ "${yn}" = 'y' ];
 then
-  echo "Removing hosts config..."
+  echo -n "Removing hosts config..."
   # Remove all lines between # BEGIN SELF, # END SELF
   sudo sed -i '/# BEGIN SELFCONTROL/,/# END SELFCONTROL/d' /etc/hosts \
-    && echo "...done!"
+    && echo " done!"
 fi
 
 ```
